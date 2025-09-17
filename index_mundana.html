@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Áreas de enfoque de Mundana y el IEIE - Dashboard Interactivo</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --accent-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #0f172a, #1e293b);
+        }
+
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: slideInDown 1s ease-out;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stats-panel {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .control-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .control-btn:hover, .control-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            z-index: 1;
+            height: 400px;
+        }
+
+        .interpretation {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .interpretation h2 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .area-details {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .area-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .area-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .area-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .area-percentage {
+            background: var(--gradient-1);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.1);
+            animation: floatUpDown 6s ease-in-out infinite;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 40px;
+            height: 40px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -4s;
+        }
+
+        @keyframes floatUpDown {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .tooltip {
+            position: absolute;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-panel {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .chart-controls {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1>Áreas de Enfoque</h1>
+            <p>Mundana & Instituto Europeo de Inteligencias Eficientes</p>
+        </header>
+
+        <div class="dashboard">
+            <aside class="stats-panel">
+                <div class="stat-card" data-area="bachillerato">
+                    <h3>Bachillerato y Exámenes</h3>
+                    <div class="stat-value">30%</div>
+                </div>
+                <div class="stat-card" data-area="emocional">
+                    <h3>Int. Emocional</h3>
+                    <div class="stat-value">20%</div>
+                </div>
+                <div class="stat-card" data-area="particulares">
+                    <h3>Clases Personalizadas</h3>
+                    <div class="stat-value">20%</div>
+                </div>
+                <div class="stat-card" data-area="culturales">
+                    <h3>Cursos Culturales</h3>
+                    <div class="stat-value">15%</div>
+                </div>
+                <div class="stat-card" data-area="investigacion">
+                    <h3>Investigación</h3>
+                    <div class="stat-value">15%</div>
+                </div>
+            </aside>
+
+            <main class="chart-container">
+                <div class="chart-header">
+                    <h2 class="chart-title">Distribución de Enfoques</h2>
+                    <div class="chart-controls">
+                        <button class="control-btn active" data-chart="bar">Barras</button>
+                        <button class="control-btn" data-chart="doughnut">Donut</button>
+                        <button class="control-btn" data-chart="polarArea">Polar</button>
+                        <button class="control-btn" data-chart="radar">Radar</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </main>
+        </div>
+
+        <section class="interpretation">
+            <h2>Análisis Detallado</h2>
+            <div class="area-details">
+                <div class="area-item" data-area="bachillerato">
+                    <h3>
+                        🎓 Bachillerato y Preparación de Exámenes
+                        <span class="area-percentage">30%</span>
+                    </h3>
+                    <p>El núcleo de Mundana se especializa en Bachillerato para Adultos y preparación para PCE, certificaciones Cambridge y Linguaskill. Diseñado para estudiantes internacionales y adultos que buscan acceso universitario.</p>
+                </div>
+                <div class="area-item" data-area="emocional">
+                    <h3>
+                        💝 Inteligencia Emocional
+                        <span class="area-percentage">20%</span>
+                    </h3>
+                    <p>Programas como la Escuela de Emociones, integrando cursos sobre regulación emocional, empatía y autoestima, con colaboración de expertos como Ismael Cala y Kike Santander.</p>
+                </div>
+                <div class="area-item" data-area="particulares">
+                    <h3>
+                        👨‍🏫 Clases Particulares Personalizadas
+                        <span class="area-percentage">20%</span>
+                    </h3>
+                    <p>Tutorías individualizadas basadas en más de 30 años de experiencia, con apoyo 24/7 adaptándose al ritmo de cada estudiante para asignaturas específicas.</p>
+                </div>
+                <div class="area-item" data-area="culturales">
+                    <h3>
+                        🎨 Cursos Culturales
+                        <span class="area-percentage">15%</span>
+                    </h3>
+                    <p>Ofertas culturales enriquecedoras como visitas guiadas al Museo del Prado y playlists de anécdotas artísticas, con un enfoque lúdico y educativo.</p>
+                </div>
+                <div class="area-item" data-area="investigacion">
+                    <h3>
+                        🔬 Investigación y Liderazgo
+                        <span class="area-percentage">15%</span>
+                    </h3>
+                    <p>Base científica del IEIE incluyendo investigación psicopedagógica y programas de liderazgo como el Congreso Mujer Alfa, fomentando habilidades transformadoras.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        class MundanaChart {
+            constructor() {
+                this.ctx = document.getElementById('mainChart').getContext('2d');
+                this.chart = null;
+                this.currentType = 'bar';
+                this.data = {
+                    labels: [
+                        'Bachillerato y Exámenes',
+                        'Inteligencia Emocional',
+                        'Clases Particulares',
+                        'Cursos Culturales',
+                        'Investigación y Liderazgo'
+                    ],
+                    datasets: [{
+                        label: 'Porcentaje de Enfoque',
+                        data: [30, 20, 20, 15, 15],
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(6, 182, 212, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgb(99, 102, 241)',
+                            'rgb(139, 92, 246)',
+                            'rgb(6, 182, 212)',
+                            'rgb(16, 185, 129)',
+                            'rgb(245, 158, 11)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        hoverOffset: 10
+                    }]
+                };
+                
+                this.init();
+                this.setupEventListeners();
+                this.setupCardInteractions();
+            }
+
+            init() {
+                this.createChart('bar');
+            }
+
+            createChart(type) {
+                if (this.chart) {
+                    this.chart.destroy();
+                }
+
+                const config = {
+                    type: type,
+                    data: this.data,
+                    options: this.getChartOptions(type),
+                    plugins: [ChartDataLabels]
+                };
+
+                this.chart = new Chart(this.ctx, config);
+                this.currentType = type;
+            }
+
+            getChartOptions(type) {
+                const baseOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: type !== 'bar',
+                            position: 'bottom',
+                            labels: {
+                                color: '#f8fafc',
+                                padding: 20,
+                                font: { size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#cbd5e1',
+                            borderColor: '#6366f1',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true
+                        },
+                        datalabels: {
+                            display: true,
+                            color: '#ffffff',
+                            font: {
+                                size: 11,
+                                weight: 'bold'
+                            },
+                            formatter: (value) => `${value}%`,
+                            anchor: type === 'bar' ? 'end' : 'center',
+                            align: type === 'bar' ? 'top' : 'center'
+                        }
+                    }
+                };
+
+                if (type === 'bar') {
+                    baseOptions.scales = {
+                        y: {
+                            beginAtZero: true,
+                            max: 35,
+                            ticks: {
+                                color: '#cbd5e1',
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                color: 'rgba(203, 213, 225, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#cbd5e1',
+                                font: { size: 10 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    };
+                }
+
+                if (type === 'radar') {
+                    baseOptions.scales = {
+                        r: {
+                            beginAtZero: true,
+                            max: 35,
+                            ticks: {
+                                color: '#cbd5e1',
+                                backdropColor: 'transparent'
+                            },
+                            grid: {
+                                color: 'rgba(203, 213, 225, 0.2)'
+                            },
+                            angleLines: {
+                                color: 'rgba(203, 213, 225, 0.2)'
+                            }
+                        }
+                    };
+                }
+
+                return baseOptions;
+            }
+
+            setupEventListeners() {
+                document.querySelectorAll('[data-chart]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const chartType = e.target.dataset.chart;
+                        
+                        // Update active button
+                        document.querySelectorAll('[data-chart]').forEach(b => 
+                            b.classList.remove('active')
+                        );
+                        e.target.classList.add('active');
+
+                        // Create new chart
+                        this.createChart(chartType);
+                    });
+                });
+            }
+
+            setupCardInteractions() {
+                const cards = document.querySelectorAll('.stat-card');
+                const areaItems = document.querySelectorAll('.area-item');
+
+                cards.forEach(card => {
+                    card.addEventListener('mouseenter', () => {
+                        const area = card.dataset.area;
+                        this.highlightArea(area);
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        this.removeHighlight();
+                    });
+                });
+
+                areaItems.forEach(item => {
+                    item.addEventListener('mouseenter', () => {
+                        const area = item.dataset.area;
+                        this.highlightArea(area);
+                    });
+
+                    item.addEventListener('mouseleave', () => {
+                        this.removeHighlight();
+                    });
+                });
+            }
+
+            highlightArea(area) {
+                const areaIndex = {
+                    'bachillerato': 0,
+                    'emocional': 1,
+                    'particulares': 2,
+                    'culturales': 3,
+                    'investigacion': 4
+                };
+
+                if (this.chart && areaIndex[area] !== undefined) {
+                    const index = areaIndex[area];
+                    const colors = [...this.data.datasets[0].backgroundColor];
+                    colors[index] = colors[index].replace('0.8', '1');
+                    
+                    this.chart.data.datasets[0].backgroundColor = colors;
+                    this.chart.update('none');
+                }
+            }
+
+            removeHighlight() {
+                if (this.chart) {
+                    this.chart.data.datasets[0].backgroundColor = [
+                        'rgba(99, 102, 241, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(6, 182, 212, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(245, 158, 11, 0.8)'
+                    ];
+                    this.chart.update('none');
+                }
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new MundanaChart();
+        });
+
+        // Add smooth scrolling for internal links
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('a[href^="#"]')) {
+                e.preventDefault();
+                const target = document.querySelector(e.target.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
