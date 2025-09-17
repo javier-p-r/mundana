@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundana vs Plataformas E-Learning - Análisis Comparativo</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #7c3aed;
+            --accent-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --surface-bg: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+            --mundana-color: #16a34a;
+            --coursera-color: #0056d3;
+            --udemy-color: #a435f0;
+            --platzi-color: #98ca3f;
+            --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --glow-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: slideInDown 1s ease-out;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .comparison-table {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--glow-shadow);
+            overflow-x: auto;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .table-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .responsive-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .responsive-table th {
+            background: var(--surface-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        .responsive-table th:first-child {
+            text-align: left;
+            background: var(--dark-bg);
+        }
+
+        .responsive-table th.mundana { background: var(--mundana-color); }
+        .responsive-table th.coursera { background: var(--coursera-color); }
+        .responsive-table th.udemy { background: var(--udemy-color); }
+        .responsive-table th.platzi { background: var(--platzi-color); }
+
+        .responsive-table td {
+            background: var(--card-bg);
+            padding: 1.25rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .responsive-table td:first-child {
+            background: var(--dark-bg);
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .responsive-table tr:hover td {
+            background: rgba(37, 99, 235, 0.1);
+            transform: scale(1.02);
+        }
+
+        .responsive-table tr:hover td:first-child {
+            background: var(--dark-bg);
+        }
+
+        .stars {
+            font-size: 1.2rem;
+            color: #fbbf24;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+            display: inline-block;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .insight-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow-shadow);
+            border-color: var(--primary-color);
+        }
+
+        .insight-card:hover::before {
+            opacity: 1;
+        }
+
+        .insight-card h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .insight-card .emoji {
+            font-size: 1.6rem;
+        }
+
+        .insight-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .insight-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .insight-card li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .insight-card li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        .conclusion-section {
+            background: linear-gradient(135deg, var(--card-bg), var(--surface-bg));
+            border-radius: 20px;
+            padding: 3rem;
+            border: 1px solid var(--border-color);
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .conclusion-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .conclusion-section .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .conclusion-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .conclusion-text {
+            font-size: 1.2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .highlight-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .highlight-box h4 {
+            color: var(--accent-color);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box p {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+
+        .platform-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.mundana { background: var(--mundana-color); color: white; }
+        .badge.leader { background: var(--warning-color); color: var(--dark-bg); }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .responsive-table {
+                font-size: 0.9rem;
+            }
+            
+            .responsive-table th,
+            .responsive-table td {
+                padding: 1rem 0.5rem;
+            }
+            
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .conclusion-section {
+                padding: 2rem;
+            }
+        }
+
+        /* Scroll animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Mundana vs Plataformas E-Learning</h1>
+            <p>Análisis Comparativo Completo - Tabla de Posicionamiento Estratégico</p>
+        </header>
+
+        <section class="comparison-table scroll-reveal">
+            <h2 class="table-title">📊 Tabla Comparativa Final</h2>
+            <div style="overflow-x: auto;">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Criterio</th>
+                            <th class="mundana">Mundana</th>
+                            <th class="coursera">Coursera</th>
+                            <th class="udemy">Udemy</th>
+                            <th class="platzi">Platzi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Especialización</strong></td>
+                            <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐⭐</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Personalización</strong></td>
+                            <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐</span></td>
+                            <td><span class="stars">⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Credibilidad</strong></td>
+                            <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Escalabilidad</strong></td>
+                            <td><span class="stars">⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐⭐</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>ROI Estudiante</strong></td>
+                            <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nicho Target</strong></td>
+                            <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            <td><span class="stars">⭐⭐</span></td>
+                            <td><span class="stars">⭐</span></td>
+                            <td><span class="stars">⭐⭐⭐</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="insights-grid">
+            <div class="insight-card scroll-reveal">
+                <h3><span class="emoji">🎯</span> Ventajas Competitivas de Mundana</h3>
+                <ul>
+                    <li><strong>Especialización Ultra-Nicho:</strong> Domina completamente el bachillerato para adultos en español</li>
+                    <li><strong>Metodología Híbrida Única:</strong> Académico + Emocional + Cultural</li>
+                    <li><strong>Personalización Premium:</strong> Tutoría 24/7 vs. auto-aprendizaje masivo</li>
+                    <li><strong>Track Record:</strong> 30+ años de experiencia probada</li>
+                </ul>
+            </div>
+
+            <div class="insight-card scroll-reveal">
+                <h3><span class="emoji">⚡</span> Diferenciación Clave</h3>
+                <ul>
+                    <li><strong>vs. Coursera:</strong> Resultados reales vs. certificados decorativos</li>
+                    <li><strong>vs. Udemy:</strong> Calidad garantizada vs. instructores variables</li>
+                    <li><strong>vs. Platzi:</strong> Educación formal vs. habilidades tech</li>
+                    <li><strong>Océano Azul:</strong> Nicho desatendido por gigantes tecnológicos</li>
+                </ul>
+            </div>
+
+            <div class="insight-card scroll-reveal">
+                <h3><span class="emoji">🏆</span> Posicionamiento Estratégico</h3>
+                <p><strong>"El Harvard del Bachillerato para Adultos en España"</strong></p>
+                <ul>
+                    <li>Premium + Especializado vs. masivo + generalista</li>
+                    <li>Resultados garantizados vs. volumen de contenido</li>
+                    <li>Atención humana vs. automatización</li>
+                    <li>Colaboraciones de élite (Cala, Santander, IEIE)</li>
+                </ul>
+            </div>
+
+            <div class="insight-card scroll-reveal">
+                <h3><span class="emoji">📈</span> Oportunidades de Mejora</h3>
+                <ul>
+                    <li><strong>Tecnología:</strong> Implementar IA y gamificación</li>
+                    <li><strong>Escalabilidad:</strong> Expansión latinoamericana</li>
+                    <li><strong>Marketing:</strong> Mayor visibilidad digital</li>
+                    <li><strong>Partnerships:</strong> Alianzas tecnológicas estratégicas</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="conclusion-section">
+            <div class="content">
+                <h2>🏆 Conclusión Estratégica</h2>
+                <p class="conclusion-text">
+                    <strong>Mundana no compite con estas plataformas - las complementa.</strong> 
+                    Mientras Coursera sirve para embellecer currículums y Udemy para mejorar habilidades rápidamente, 
+                    Mundana resuelve un problema específico crítico.
+                </p>
+
+                <div class="highlight-box">
+                    <h4>🎯 Value Proposition Único</h4>
+                    <p>
+                        "Mientras Coursera te da un certificado de Stanford y Udemy te enseña de todo, 
+                        <strong>Mundana te garantiza tu plaza universitaria en España</strong> con 30 años de experiencia probada."
+                    </p>
+                </div>
+
+                <p class="conclusion-text">
+                    Su fortaleza no está en competir por volumen, sino en ser <strong>el líder indiscutible de su nicho premium</strong>, 
+                    ofreciendo lo que ninguna plataforma masiva puede: <strong>resultados educativos garantizados con atención humana personalizada.</strong>
+                </p>
+
+                <div class="platform-badges">
+                    <span class="badge mundana">Mundana</span>
+                    <span class="badge leader">Líder de Nicho</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.scroll-reveal');
+            elements.forEach(el => observer.observe(el));
+
+            // Add sparkle effect to stars on hover
+            const starElements = document.querySelectorAll('.stars');
+            starElements.forEach(star => {
+                star.addEventListener('mouseenter', () => {
+                    star.style.transform = 'scale(1.2)';
+                    star.style.filter = 'drop-shadow(0 0 10px #fbbf24)';
+                });
+                
+                star.addEventListener('mouseleave', () => {
+                    star.style.transform = 'scale(1)';
+                    star.style.filter = 'none';
+                });
+            });
+
+            // Table row interaction effects
+            const tableRows = document.querySelectorAll('.responsive-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', () => {
+                    row.style.backgroundColor = 'rgba(37, 99, 235, 0.15)';
+                });
+                
+                row.addEventListener('mouseleave', () => {
+                    row.style.backgroundColor = '';
+                });
+            });
+        });
+
+        // Add floating particles effect
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: 4px;
+                height: 4px;
+                background: rgba(37, 99, 235, 0.6);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: -1;
+                left: ${Math.random() * 100}vw;
+                top: 100vh;
+                animation: float-up 10s linear infinite;
+            `;
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 10000);
+        }
+
+        // Add CSS for particle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float-up {
+                to {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Create particles periodically
+        setInterval(createParticle, 2000);
+    </script>
+</body>
+</html>

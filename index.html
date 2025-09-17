@@ -339,6 +339,171 @@
             backdrop-filter: blur(10px);
         }
 
+        /* Navigation Menu Styles */
+        .navigation-menu {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .menu-toggle {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-1);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-toggle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M4 6h16M4 12h16M4 18h16'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.6);
+        }
+
+        .menu-toggle.active::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12'/%3E%3C/svg%3E");
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+
+        .menu-items {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.8);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-width: 280px;
+            transform-origin: bottom right;
+            pointer-events: none;
+        }
+
+        .menu-items.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .menu-item {
+            display: block;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .menu-item:nth-child(1) { animation-delay: 0.1s; }
+        .menu-item:nth-child(2) { animation-delay: 0.15s; }
+        .menu-item:nth-child(3) { animation-delay: 0.2s; }
+        .menu-item:nth-child(4) { animation-delay: 0.25s; }
+        .menu-item:nth-child(5) { animation-delay: 0.3s; }
+        .menu-item:nth-child(6) { animation-delay: 0.35s; }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-1);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .menu-item:hover::before {
+            left: 0;
+        }
+
+        .menu-item:hover {
+            color: white;
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+            border-color: var(--primary-color);
+        }
+
+        .menu-item-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-item-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .menu-item:hover .menu-item-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Menu icon animations */
+        .menu-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            display: inline-block;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .navigation-menu {
+                bottom: 1rem;
+                right: 1rem;
+            }
+
+            .menu-items {
+                min-width: 250px;
+                right: -20px;
+            }
+
+            .menu-item {
+                padding: 0.8rem 1rem;
+            }
+        }
+
         @media (max-width: 1024px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -467,6 +632,55 @@
     </div>
 
     <div class="tooltip" id="tooltip"></div>
+
+    <!-- Navigation Menu -->
+    <nav class="navigation-menu">
+        <button class="menu-toggle" id="menuToggle" aria-label="Menú de navegación"></button>
+        <div class="menu-items" id="menuItems">
+            <a href="mundana/opcion01.html" class="menu-item">
+                <div class="menu-item-title">
+                    <span class="menu-icon">📊</span>
+                    Análisis Comparativo
+                </div>
+                <div class="menu-item-description">Comparativa con plataformas líderes</div>
+            </a>
+            <a href="mundana/opcion02.html" class="menu-item">
+                <div class="menu-item-title">
+                    <span class="menu-icon">🎓</span>
+                    Programas Académicos
+                </div>
+                <div class="menu-item-description">Bachillerato y preparación PCE</div>
+            </a>
+            <a href="mundana/opcion03.html" class="menu-item">
+                <div class="menu-item-title">
+                    <span class="menu-icon">💝</span>
+                    Inteligencia Emocional
+                </div>
+                <div class="menu-item-description">Escuela de Emociones y desarrollo personal</div>
+            </a>
+            <a href="mundana/opcion04.html" class="menu-item">
+                <div class="menu-item-title">
+                    <span class="menu-icon">🎨</span>
+                    Cursos Culturales
+                </div>
+                <div class="menu-item-description">Museo del Prado y experiencias artísticas</div>
+            </a>
+            <a href="mundana/opcion05.html" class="menu-item">
+                <div class="menu-item-title">
+                    <span class="menu-icon">🔬</span>
+                    Investigación IEIE
+                </div>
+                <div class="menu-item-description">Base científica y metodología</div>
+            </a>
+            <a href="mundana/opcion06.html" class="menu-item">
+                <div class="menu-item-title">
+                    <span class="menu-icon">👨‍🏫</span>
+                    Tutorías Personalizadas
+                </div>
+                <div class="menu-item-description">Atención 24/7 y seguimiento individual</div>
+            </a>
+        </div>
+    </nav>
 
     <script>
         class MundanaChart {
@@ -698,7 +912,84 @@
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             new MundanaChart();
+            initializeNavigationMenu();
         });
+
+        // Navigation Menu Functionality
+        function initializeNavigationMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const menuItems = document.getElementById('menuItems');
+            let isMenuOpen = false;
+
+            console.log('Menu elements:', { menuToggle, menuItems }); // Debug
+
+            if (!menuToggle || !menuItems) {
+                console.error('Menu elements not found!');
+                return;
+            }
+
+            menuToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                isMenuOpen = !isMenuOpen;
+                console.log('Menu toggled:', isMenuOpen); // Debug
+                
+                if (isMenuOpen) {
+                    menuToggle.classList.add('active');
+                    menuItems.classList.add('active');
+                    console.log('Menu opened');
+                } else {
+                    menuToggle.classList.remove('active');
+                    menuItems.classList.remove('active');
+                    console.log('Menu closed');
+                }
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.navigation-menu') && isMenuOpen) {
+                    isMenuOpen = false;
+                    menuToggle.classList.remove('active');
+                    menuItems.classList.remove('active');
+                    console.log('Menu closed by outside click');
+                }
+            });
+
+            // Close menu when pressing Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isMenuOpen) {
+                    isMenuOpen = false;
+                    menuToggle.classList.remove('active');
+                    menuItems.classList.remove('active');
+                    console.log('Menu closed by Escape key');
+                }
+            });
+
+            // Add click animation to menu items
+            const menuItemLinks = document.querySelectorAll('.menu-item');
+            menuItemLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    // Add a subtle click animation
+                    link.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        link.style.transform = '';
+                    }, 100);
+                    
+                    // Close menu after clicking a link
+                    setTimeout(() => {
+                        isMenuOpen = false;
+                        menuToggle.classList.remove('active');
+                        menuItems.classList.remove('active');
+                    }, 150);
+                });
+            });
+
+            // Test button functionality
+            menuToggle.addEventListener('mouseenter', () => {
+                console.log('Button hover detected');
+            });
+        }
 
         // Add smooth scrolling for internal links
         document.addEventListener('click', (e) => {
