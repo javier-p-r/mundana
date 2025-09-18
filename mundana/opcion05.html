@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigación IEIE - Evaluación de Accesibilidad WCAG</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --accent-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --surface-bg: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --gradient-research: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+            --glow-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #0f172a, #1e293b);
+        }
+
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            background: var(--gradient-research);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: slideInDown 1s ease-out;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .institution-info {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .institution-info::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.03) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        .institution-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .institution-info h2 {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .institution-name {
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: var(--surface-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: inline-block;
+            font-size: 1.1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .principle-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: fadeInUp 1s ease-out;
+            animation-fill-mode: both;
+            cursor: pointer;
+        }
+
+        .principle-card:nth-child(1) { animation-delay: 0.1s; }
+        .principle-card:nth-child(2) { animation-delay: 0.2s; }
+        .principle-card:nth-child(3) { animation-delay: 0.3s; }
+        .principle-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .principle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            transition: all 0.3s ease;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .principle-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .principle-card.compliant::before {
+            background: var(--gradient-success);
+        }
+
+        .principle-card.partial::before {
+            background: var(--gradient-warning);
+        }
+
+        .principle-card.non-compliant::before {
+            background: var(--gradient-danger);
+        }
+
+        .principle-card.compliant::after {
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 70%);
+        }
+
+        .principle-card.partial::after {
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.05) 0%, transparent 70%);
+        }
+
+        .principle-card.non-compliant::after {
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
+        }
+
+        .principle-card:hover {
+            transform: translateY(-12px) scale(1.02);
+        }
+
+        .principle-card:hover.compliant {
+            box-shadow: 0 25px 50px rgba(16, 185, 129, 0.25);
+            border-color: var(--success-color);
+        }
+
+        .principle-card:hover.partial {
+            box-shadow: 0 25px 50px rgba(245, 158, 11, 0.25);
+            border-color: var(--warning-color);
+        }
+
+        .principle-card:hover.non-compliant {
+            box-shadow: 0 25px 50px rgba(239, 68, 68, 0.25);
+            border-color: var(--danger-color);
+        }
+
+        .principle-card:hover::after {
+            opacity: 1;
+        }
+
+        .principle-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .principle-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .compliance-badge {
+            padding: 0.75rem 1.25rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .compliance-badge.compliant {
+            background: var(--success-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .compliance-badge.partial {
+            background: var(--warning-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .compliance-badge.non-compliant {
+            background: var(--danger-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .principle-items {
+            list-style: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .principle-items li {
+            padding: 1rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .principle-items li:last-child {
+            border-bottom: none;
+        }
+
+        .status-icon {
+            font-size: 1.4rem;
+            margin-top: 0.1rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .status-icon.success { color: var(--success-color); }
+        .status-icon.warning { color: var(--warning-color); }
+        .status-icon.error { color: var(--danger-color); }
+
+        .summary-table {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 4rem 0;
+            animation: fadeInUp 1s ease-out 0.6s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-table::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.03) 0%, transparent 70%);
+            animation: rotate 35s linear infinite;
+        }
+
+        .summary-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .summary-table h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: var(--text-primary);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            background: var(--surface-bg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--gradient-research);
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        td {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        tbody tr:hover {
+            background: rgba(147, 51, 234, 0.05);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .recommendations {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 4rem 0;
+            position: relative;
+            animation: fadeInUp 1s ease-out 0.8s both;
+            overflow: hidden;
+        }
+
+        .recommendations::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: var(--gradient-success);
+            border-radius: 0 0 0 24px;
+        }
+
+        .recommendations::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.03) 0%, transparent 70%);
+            animation: rotate 40s linear infinite;
+        }
+
+        .recommendations-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .recommendations h2 {
+            color: var(--success-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .recommendations h2::before {
+            content: '🔬';
+            font-size: 2rem;
+        }
+
+        .recommendations ol {
+            list-style: none;
+            counter-reset: recommendation;
+        }
+
+        .recommendations li {
+            counter-increment: recommendation;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 16px;
+            position: relative;
+            padding-left: 4rem;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .recommendations li:hover {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.2);
+            transform: translateX(5px);
+        }
+
+        .recommendations li::before {
+            content: counter(recommendation);
+            position: absolute;
+            left: 1.5rem;
+            top: 1.5rem;
+            background: var(--success-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        code {
+            background: var(--surface-bg);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: var(--gradient-research);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 0.9rem;
+            box-shadow: var(--glow-shadow);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(147, 51, 234, 0.4);
+        }
+
+        .back-button::before {
+            content: '←';
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .principles-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .principle-card,
+            .summary-table,
+            .recommendations {
+                padding: 2rem;
+            }
+            
+            .institution-info {
+                padding: 2rem;
+            }
+            
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.8rem 1rem;
+            }
+            
+            th, td {
+                padding: 1rem 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .principle-card {
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .principle-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+
+    <a href="../index.html" class="back-button">Volver al Dashboard</a>
+
+    <div class="container">
+        <header class="header">
+            <h1>Investigación IEIE - Evaluación WCAG</h1>
+            <p>Análisis detallado de accesibilidad web para el Instituto Europeo de Inteligencias Eficientes</p>
+        </header>
+
+        <div class="institution-info">
+            <div class="institution-content">
+                <h2>Institución Evaluada</h2>
+                <div class="institution-name">Instituto Europeo de Inteligencias Eficientes (IEIE)</div>
+            </div>
+        </div>
+
+        <section class="principles-grid">
+            <div class="principle-card partial">
+                <div class="principle-header">
+                    <h3 class="principle-title">1. Perceptible</h3>
+                    <span class="compliance-badge partial">Parcial</span>
+                </div>
+                <ul class="principle-items">
+                    <li>
+                        <span class="status-icon success">✅</span>
+                        <span>Imágenes con atributos <code>alt</code></span>
+                    </li>
+                    <li>
+                        <span class="status-icon error">❌</span>
+                        <span>Texto alternativo no descriptivo (ej: "academia-de-emociones-ieie")</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="principle-card partial">
+                <div class="principle-header">
+                    <h3 class="principle-title">2. Operable</h3>
+                    <span class="compliance-badge partial">Parcial</span>
+                </div>
+                <ul class="principle-items">
+                    <li>
+                        <span class="status-icon success">✅</span>
+                        <span>Enlace "Saltar al contenido" presente</span>
+                    </li>
+                    <li>
+                        <span class="status-icon warning">⚠️</span>
+                        <span>Posible estructura jerárquica de encabezados incorrecta</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="principle-card partial">
+                <div class="principle-header">
+                    <h3 class="principle-title">3. Comprensible</h3>
+                    <span class="compliance-badge partial">Parcial</span>
+                </div>
+                <ul class="principle-items">
+                    <li>
+                        <span class="status-icon error">❌</span>
+                        <span>Falta atributo <code>lang</code> en <code>&lt;html&gt;</code></span>
+                    </li>
+                    <li>
+                        <span class="status-icon warning">⚠️</span>
+                        <span>Encabezados con texto no semántico (ej: fecha en título)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="principle-card non-compliant">
+                <div class="principle-header">
+                    <h3 class="principle-title">4. Robusto</h3>
+                    <span class="compliance-badge non-compliant">No Conforme</span>
+                </div>
+                <ul class="principle-items">
+                    <li>
+                        <span class="status-icon error">❌</span>
+                        <span>Ausencia de roles ARIA o elementos semánticos modernos</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="summary-table">
+            <div class="summary-content">
+                <h2>Resumen de Conformidad</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Principio WCAG</th>
+                                <th>Estado</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Perceptible</strong></td>
+                                <td><span class="compliance-badge partial">Parcial</span></td>
+                                <td>Alt text no descriptivo</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Operable</strong></td>
+                                <td><span class="compliance-badge partial">Parcial</span></td>
+                                <td>Posible jerarquía de encabezados incorrecta</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Comprensible</strong></td>
+                                <td><span class="compliance-badge partial">Parcial</span></td>
+                                <td>Sin atributo lang y encabezados no semánticos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Robusto</strong></td>
+                                <td><span class="compliance-badge non-compliant">No Conforme</span></td>
+                                <td>Sin ARIA o HTML5 semántico</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="recommendations">
+            <div class="recommendations-content">
+                <h2>Recomendaciones de Mejora</h2>
+                <ol>
+                    <li>Agregar <code>lang="es"</code> al <code>&lt;html&gt;</code> para identificar el idioma principal</li>
+                    <li>Mejorar texto alternativo descriptivo (ej: "Academia de emociones - IEIE")</li>
+                    <li>Corregir jerarquía de encabezados siguiendo estructura H1 > H2 > H3</li>
+                    <li>Implementar elementos semánticos <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code> y <code>&lt;footer&gt;</code></li>
+                    <li>Usar atributos ARIA para roles interactivos y dinámicos</li>
+                    <li>Verificar contraste de colores con herramientas especializadas como WAVE</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Evaluación basada en WCAG 2.1/2.0 | Herramienta: Análisis manual especializado</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Enhanced entrance animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) scale(1)';
+                    }
+                });
+            }, observerOptions);
+
+            const cards = document.querySelectorAll('.principle-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px) scale(0.95)';
+                card.style.transitionDelay = `${index * 0.15}s`;
+                observer.observe(card);
+            });
+
+            // Advanced hover effects for badges
+            const badges = document.querySelectorAll('.compliance-badge');
+            badges.forEach(badge => {
+                badge.addEventListener('mouseenter', () => {
+                    badge.style.transform = 'scale(1.15) rotate(2deg)';
+                    badge.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';
+                });
+                
+                badge.addEventListener('mouseleave', () => {
+                    badge.style.transform = 'scale(1) rotate(0deg)';
+                    badge.style.boxShadow = '';
+                });
+            });
+
+            // Interactive recommendation items
+            const recommendations = document.querySelectorAll('.recommendations li');
+            recommendations.forEach(item => {
+                item.addEventListener('click', () => {
+                    item.style.transform = 'translateX(10px) scale(0.98)';
+                    item.style.background = 'rgba(16, 185, 129, 0.12)';
+                    
+                    setTimeout(() => {
+                        item.style.transform = 'translateX(5px) scale(1)';
+                        item.style.background = 'rgba(16, 185, 129, 0.05)';
+                    }, 200);
+                });
+            });
+
+            // Staggered table row animations
+            const tableRows = document.querySelectorAll('tbody tr');
+            const tableObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateX(0)';
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            tableRows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(-30px)';
+                row.style.transition = `all 0.5s ease ${index * 0.1}s`;
+                tableObserver.observe(row);
+            });
+
+            // Enhanced card interactions
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.zIndex = '10';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.zIndex = '1';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
